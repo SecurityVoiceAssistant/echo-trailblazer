@@ -1,10 +1,12 @@
 from speech_recognition import pipe
 # from speech_recognition import prompt
 
-filename = 'https://cdn-media.huggingface.co/speech_samples/sample2.flac'
+filename = 'https://cdn-media.huggingface.co/speech_samples/sample1.flac'
 
-sr_result = pipe(filename)['text']
-print(sr_result)
+result = pipe(filename, generate_kwargs={"task": "translate"})
+text = result['text']
+print(text)
 
-# answer = prompt(sr_result)
+# answer = prompt(text)
 # print(answer)
+
