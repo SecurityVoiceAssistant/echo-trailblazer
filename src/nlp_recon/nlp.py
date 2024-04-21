@@ -1,6 +1,3 @@
-!pip install torchvision
-!pip install easygui
-!pip install pyExploitDb
 import torch
 import torchvision
 import subprocess
@@ -10,13 +7,16 @@ from tkinter import Tk
 from tkinter.filedialog import askopenfilename
 from pyExploitDb import PyExploitDb
 
+from transformers import RobertaTokenizer, RobertaTokenizerFast
 
+tokenizer = RobertaTokenizerFast.from_pretrained("ehsanaghaei/SecureBERT")
 
+model = torch.load('models/model.pt')
+model.to('cuda:0')
 
-model = torch.load('model3.pt')
-model.eval()
-def prepare_features(seq_1, max_seq_length = 300, 
-             zero_pad = False, include_CLS_token = True, include_SEP_token = True):
+def prepare_features(
+  seq_1, max_seq_length = 300, zero_pad = False,
+  include_CLS_token = True, include_SEP_token = True):
     ## Tokenzine Input
     tokens_a = tokenizer.tokenize(seq_1)
 
@@ -43,6 +43,7 @@ def prepare_features(seq_1, max_seq_length = 300,
             input_ids.append(0)
             input_mask.append(0)
     return torch.tensor(input_ids).unsqueeze(0), input_mask
+
 def get_reply(msg):
   model.eval()
   input_msg, _ = prepare_features(msg)
@@ -52,9 +53,7 @@ def get_reply(msg):
   _, pred_label = torch.max(output.data, 1)
   result = pred_label.item()
   return result
-from transformers import RobertaTokenizer, RobertaTokenizerFast
 
-tokenizer = RobertaTokenizerFast.from_pretrained("ehsanaghaei/SecureBERT")
 def runShodanIp(ip):
     command = f"shodan host '{ip}' "
     return command
@@ -259,9 +258,4 @@ while(True):
             exploitT = input("Do you want use the tool again? ('yes' or 'no'): ")
             if(exploitT != "yes"):
                 exploitDB = False
-                
-
-
-
-
 
